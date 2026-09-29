@@ -1,0 +1,75 @@
+# ===== 编译输出与临时文件 =====
+build/
+Objects/
+Listings/
+DebugConfig/
+*.o
+*.d
+*.axf
+*.hex
+*.bin
+*.map
+*.lst
+*.crf
+*.dep
+*.htm
+*.lnp
+*.plg
+*.iex
+*.sct
+*.build_log.htm
+*.uvguix.*
+*.bak
+*.tmp
+*~
+*.log
+
+# ===== Keil MDK 工程文件 =====
+# 保留工程文件（.uvprojx），忽略用户界面配置（.uvoptx 等）
+*.uvoptx
+*.uvproj
+*.uvprojx.bak
+*.uvoptx.bak
+# 如果你希望工程配置不纳入版本控制，可以取消下面注释
+# *.uvprojx
+
+# ===== EIDE (VSCode 嵌入式插件) =====
+# 保留项目配置，忽略构建输出和本地设置
+.eide/build/
+.eide/obj/
+.eide/tmp/
+.eide/*.log
+.eide/*.tmp
+# 保留核心配置文件（如 eide.json）
+!.eide/eide.json
+!.eide/*.json
+
+# ===== VSCode 配置 =====
+# 通常忽略个人设置，保留工作区文件
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# ===== CMSIS 包（若由 IDE 自动下载） =====
+# 根据情况决定是否忽略，如果项目自带则保留
+.cmsis/
+# 若想保留部分，可改为忽略子目录
+# .cmsis/pack/
+# .cmsis/core/
+
+# ===== 操作系统与编辑器临时文件 =====
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+
+# ===== 其他 =====
+# 忽略编译生成的 .lst、.map 等已在上面涵盖
+# 忽略 clang-format 缓存（如有）
+.clang-format.cache
+
+.workbuddy

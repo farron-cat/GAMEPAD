@@ -1,0 +1,187 @@
+version: "4.1"
+name: GAMEPAD
+type: ARM
+deviceName: null
+packDir: null
+srcDirs: []
+virtualFolder:
+  name: <virtual_root>
+  files: []
+  folders:
+    - name: User
+      files:
+        - path: User/main.c
+        - path: User/stm32f10x_it.c
+        - path: User/systick.c
+      folders: []
+    - name: APP
+      files: []
+      folders: []
+    - name: Middleware
+      files: []
+      folders: []
+    - name: CMSIS
+      files:
+        - path: Firmware/CMSIS/ST/STM32F10x/system_stm32f10x.c
+        - path: Firmware/CMSIS/ST/STM32F10x/startup/arm/startup_stm32f10x_md.s
+      folders: []
+    - name: Driver
+      files: []
+      folders: []
+    - name: Hardware
+      files:
+        - path: Hardware/msp_uart/msp_uart.c
+      folders: []
+    - name: Firmware
+      files:
+        - path: Firmware/STM32F10x_StdPeriph_Driver/src/misc.c
+        - path: Firmware/STM32F10x_StdPeriph_Driver/src/stm32f10x_gpio.c
+        - path: Firmware/STM32F10x_StdPeriph_Driver/src/stm32f10x_rcc.c
+        - path: Firmware/STM32F10x_StdPeriph_Driver/src/stm32f10x_usart.c
+      folders: []
+dependenceList: []
+outDir: build
+miscInfo:
+  uid: ce8a0a3946504b59ee89491b5001234d
+targets:
+  Target_1:
+    cppPreprocessAttrs:
+      defineList:
+        - STM32F10X_MD
+        - USE_STDPERIPH_DRIVER
+      incList:
+        - User
+        - Firmware/CMSIS/ST/STM32F10x
+        - Firmware/CMSIS
+        - Firmware/STM32F10x_StdPeriph_Driver/inc
+        - .cmsis/include
+        - Project/RTE/_Target_1
+        - Hardware/msp_uart
+      libList: []
+    excludeList: []
+    settings:
+      debugger: cortex-debug
+    toolchain: AC6
+    toolchainConfigMap:
+      AC6:
+        archExtensions: ""
+        cpuType: Cortex-M3
+        floatingPointHardware: none
+        options:
+          version: 3
+          afterBuildTasks: []
+          asm-compiler:
+            $use: asm-auto
+            defines: []
+            misc-controls: ""
+          beforeBuildTasks: []
+          c/cpp-compiler:
+            language-c: c99
+            language-cpp: c++11
+            link-time-optimization: false
+            one-elf-section-per-function: true
+            optimization: level-0
+            short-enums#wchar: true
+            warnings: ac5-like-warnings
+          global:
+            output-debug-info: enable
+            use-microLIB: true
+          linker:
+            $outputTaskExcludes:
+              - .bin
+            misc-controls: --diag_suppress=L6329
+            output-format: elf
+            ro-base: "0x08000000"
+            rw-base: "0x20000000"
+            xo-base: ""
+        scatterFilePath: ""
+        storageLayout:
+          RAM:
+            - id: 1
+              isChecked: false
+              mem:
+                size: "0x0"
+                startAddr: "0x0"
+              noInit: false
+              tag: RAM
+            - id: 2
+              isChecked: false
+              mem:
+                size: "0x0"
+                startAddr: "0x0"
+              noInit: false
+              tag: RAM
+            - id: 3
+              isChecked: false
+              mem:
+                size: "0x0"
+                startAddr: "0x0"
+              noInit: false
+              tag: RAM
+            - id: 1
+              isChecked: true
+              mem:
+                size: "0x5000"
+                startAddr: "0x20000000"
+              noInit: false
+              tag: IRAM
+            - id: 2
+              isChecked: false
+              mem:
+                size: "0x0"
+                startAddr: "0x0"
+              noInit: false
+              tag: IRAM
+          ROM:
+            - id: 1
+              isChecked: false
+              isStartup: false
+              mem:
+                size: "0x0"
+                startAddr: "0x0"
+              tag: ROM
+            - id: 2
+              isChecked: false
+              isStartup: false
+              mem:
+                size: "0x0"
+                startAddr: "0x0"
+              tag: ROM
+            - id: 3
+              isChecked: false
+              isStartup: false
+              mem:
+                size: "0x0"
+                startAddr: "0x0"
+              tag: ROM
+            - id: 1
+              isChecked: true
+              isStartup: true
+              mem:
+                size: "0x10000"
+                startAddr: "0x8000000"
+              tag: IROM
+            - id: 2
+              isChecked: false
+              isStartup: false
+              mem:
+                size: "0x0"
+                startAddr: "0x0"
+              tag: IROM
+        useCustomScatterFile: false
+    uploadConfigMap:
+      JLink:
+        baseAddr: ""
+        bin: ""
+        cpuInfo:
+          cpuName: "null"
+          vendor: "null"
+        otherCmds: ""
+        proType: 1
+        speed: 8000
+      OpenOCD:
+        baseAddr: "0x08000000"
+        bin: ""
+        interface: cmsis-dap
+        target: stm32f1x
+    uploader: OpenOCD
