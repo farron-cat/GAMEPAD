@@ -2,10 +2,11 @@
 #include "systick.h"
 #include <stdio.h>
 
+#include "bsp_keys.h"
 #include "msp_uart.h"
 
 /* 私有函数声明 */
-void LED_Init(void);
+void bsp_led_init(void);
 
 /* 主函数 */
 int main(void)
@@ -19,32 +20,32 @@ int main(void)
     // USART1
     msp_uart_init();
 
-    LED_Init();
-
     //============ 片外外设 ============
+    // LED
+    bsp_led_init();
+    // KEYS
+    bsp_keys_init();
 
     printf("============ start ============\n");
     printf("SystemCoreClock = %u\r\n", (unsigned int)SystemCoreClock);
 
-    /* 无限循环 */
+    uint32_t t_print = 0;
+    // 主循环
     while (1)
     {
-        /* 点亮 PC13 LED (低电平点亮) */
-        GPIO_ResetBits(GPIOC, GPIO_Pin_13);
-        // printf("LED ON\r\n");
+        // led_test();
 
-        delay_1ms(1000);
-
-        /* 熄灭 PC13 LED */
-        GPIO_SetBits(GPIOC, GPIO_Pin_13);
-        // printf("LED OFF\r\n");
-
-        delay_1ms(1000);
+        if ((get_ms() - t_print) >= 100)
+        {
+            t_print = get_ms();
+            printf("KEY map=%04X press=%04X\r\n",
+                   keys_get_state(), keys_get_pressed());
+        }
     }
 }
 
 /* LED 初始化 (PC13) */
-void LED_Init(void)
+void bsp_led_init(void)
 {
     GPIO_InitTypeDef GPIO_InitStructure;
 
@@ -59,6 +60,21 @@ void LED_Init(void)
 
     /* 默认熄灭 LED */
     GPIO_SetBits(GPIOC, GPIO_Pin_13);
+}
+
+void led_test(void)
+{
+    /* 点亮 PC13 LED (低电平点亮) */
+    GPIO_ResetBits(GPIOC, GPIO_Pin_13);
+    // printf("LED ON\r\n");
+
+    delay_1ms(1000);
+
+    /* 熄灭 PC13 LED */
+    GPIO_SetBits(GPIOC, GPIO_Pin_13);
+    // printf("LED OFF\r\n");
+
+    delay_1ms(1000);
 }
 
 #ifdef USE_FULL_ASSERT

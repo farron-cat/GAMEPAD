@@ -26,7 +26,8 @@ virtualFolder:
         - path: Firmware/CMSIS/ST/STM32F10x/startup/arm/startup_stm32f10x_md.s
       folders: []
     - name: Driver
-      files: []
+      files:
+        - path: Driver/bsp_keys/bsp_keys.c
       folders: []
     - name: Hardware
       files:
@@ -57,6 +58,7 @@ targets:
         - .cmsis/include
         - Project/RTE/_Target_1
         - Hardware/msp_uart
+        - Driver/bsp_keys
       libList: []
     excludeList: []
     settings:

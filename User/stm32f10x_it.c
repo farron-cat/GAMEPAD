@@ -22,7 +22,10 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_it.h"
+#include "bsp_keys.h"
 #include "systick.h"
+
+volatile uint32_t systick_cnt = 0;
 
 /** @addtogroup STM32F10x_StdPeriph_Template
  * @{
@@ -135,6 +138,7 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
     delay_decrement();
+    bsp_keys_scan(); // 每 1ms 扫描一次按键
 }
 
 /******************************************************************************/

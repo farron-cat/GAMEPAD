@@ -5,8 +5,8 @@ static volatile uint64_t us_cnt = 0; // 微秒计数
 
 void systick_config(void)
 {
-    // 设置systick timer 1000000hz <=> 1us
-    if (SysTick_Config(SystemCoreClock / 1000000U))
+    // 设置systick timer 1000hz <=> 1ms
+    if (SysTick_Config(SystemCoreClock / 1000U))
     {
         while (1)
         {
@@ -15,17 +15,9 @@ void systick_config(void)
     NVIC_SetPriority(SysTick_IRQn, 0x0F); /* 最低优先级：别抢 USB/WS2812 时序 */
 }
 
-void delay_1us(uint32_t count)
-{
-    delay = count;
-    while (0U != delay)
-    {
-    }
-}
-
 void delay_1ms(uint32_t count)
 {
-    delay = count * 1000;
+    delay = count;
     while (0U != delay)
     {
     }
