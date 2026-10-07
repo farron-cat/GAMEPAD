@@ -28,10 +28,12 @@ virtualFolder:
     - name: Driver
       files:
         - path: Driver/bsp_keys/bsp_keys.c
+        - path: Driver/bsp_rgb_leds/bsp_rgb_leds.c
       folders: []
     - name: Hardware
       files:
         - path: Hardware/msp_uart/msp_uart.c
+        - path: Hardware/msp_timer/msp_timer.c
       folders: []
     - name: Firmware
       files:
@@ -39,6 +41,8 @@ virtualFolder:
         - path: Firmware/STM32F10x_StdPeriph_Driver/src/stm32f10x_gpio.c
         - path: Firmware/STM32F10x_StdPeriph_Driver/src/stm32f10x_rcc.c
         - path: Firmware/STM32F10x_StdPeriph_Driver/src/stm32f10x_usart.c
+        - path: Firmware/STM32F10x_StdPeriph_Driver/src/stm32f10x_tim.c
+        - path: Firmware/STM32F10x_StdPeriph_Driver/src/stm32f10x_dma.c
       folders: []
 dependenceList: []
 outDir: build
@@ -59,6 +63,8 @@ targets:
         - Project/RTE/_Target_1
         - Hardware/msp_uart
         - Driver/bsp_keys
+        - Hardware/msp_timer
+        - Driver/bsp_rgb_leds
       libList: []
     excludeList: []
     settings:
