@@ -34,7 +34,17 @@ uint16_t msp_adc_raw(AXIS id);
 
 // 获取滤波后的值
 uint16_t msp_adc_filtered(AXIS id);
+void axis_cal_set(AXIS id, const axis_cal_t *cal);
+const axis_cal_t *axis_cal_get(AXIS id);
+void axis_cal_capture_mid(void);
 
+// 标定
 void axis_cal_set_default(void);
+
+// 归一化
+int8_t axis_get_signed(AXIS id);
+uint8_t axis_get_unsigned(AXIS id);
+uint8_t trigger_get_8bit(AXIS id);
+uint8_t trigger_is_pressed(AXIS id);
 
 #endif // MSP_ADC_H

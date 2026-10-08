@@ -1,4 +1,5 @@
 #include "msp_adc.h"
+#include "systick.h"
 
 #define ADC_BUF_LEN AXIS_COUNT // 6
 
@@ -125,6 +126,7 @@ uint16_t msp_adc_filtered(AXIS id)
     return (id < AXIS_COUNT) ? s_filt[id] : 0;
 }
 
+// 标定
 // 设定摇杆和扳机的校准参数
 void axis_cal_set_default(void)
 {
@@ -135,4 +137,134 @@ void axis_cal_set_default(void)
     }
 }
 
+void axis_cal_set(AXIS id, const axis_cal_t *cal)
+{
+    if (id < AXIS_COUNT && cal != 0)
+    {
+        s_cal[id] = *cal;
+    }
+}
+
+const axis_cal_t *axis_cal_get(AXIS id)
+{
+    return (id < AXIS_COUNT) ? &s_cal[id] : 0;
+}
+
+/* 上电静止时抓中点：解决"电位器回中偏差 + 温漂"
+   注意：调用时手必须离开摇杆；建议取 32 次平均 */
+void axis_cal_capture_mid(void)
+{
+    uint8_t i, k;
+    uint32_t sum[AXIS_COUNT] = {0};
+
+    for (k = 0; k < 32u; k++)
+    {
+        for (i = 0; i < AXIS_COUNT; i++)
+        {
+            sum[i] += msp_adc_raw((AXIS)i);
+        }
+        delay_1ms(2);
+    }
+    for (i = 0; i < AXIS_COUNT; i++)
+    {
+        // 扳机没有"中点"概念
+        if (i == AXIS_LT || i == AXIS_RT)
+        {
+            continue;
+        }
+        s_cal[i].mid = (uint16_t)(sum[i] / 32u);
+    }
+}
+
 // 归一化
+/* 摇杆归一化：-127..+127，中位 0（带死区） */
+int8_t axis_get_signed(AXIS id)
+{
+    const axis_cal_t *c;
+    int32_t v, center, span, out;
+
+    if (id >= AXIS_COUNT)
+    {
+        return 0;
+    }
+    c = &s_cal[id];
+    v = s_filt[id];
+    if (c->invert)
+    {
+        v = (int32_t)c->max + (int32_t)c->min - v; /* 反向 */
+    }
+
+    /* 死区：中位附近直接归零，避免摇杆"自己漂" */
+    center = c->mid;
+    if (v > center - (int32_t)c->deadzone && v < center + (int32_t)c->deadzone)
+    {
+        return 0;
+    }
+
+    if (v >= center)
+    {
+        span = (int32_t)c->max - center;
+        out = (span > 0) ? ((v - center) * 127) / span : 0;
+        if (out > 127)
+        {
+            out = 127;
+        }
+    }
+    else
+    {
+        span = center - (int32_t)c->min;
+        out = (span > 0) ? ((v - center) * 127) / span : 0;
+        if (out < -127)
+        {
+            out = -127;
+        }
+    }
+    return (int8_t)out;
+}
+
+/* 摇杆归一化：0..255，中位 128（HID 8 位无符号） */
+uint8_t axis_get_unsigned(AXIS id)
+{
+    return (uint8_t)((int16_t)axis_get_signed(id) + 128);
+}
+
+/* 扳机归一化：0..255，0=松开（摇杆标定表的 mid 字段对扳机无意义） */
+uint8_t trigger_get_8bit(AXIS id)
+{
+    const axis_cal_t *c;
+    int32_t v, span, out;
+
+    if (id >= AXIS_COUNT)
+    {
+        return 0;
+    }
+    c = &s_cal[id];
+    v = (int32_t)s_filt[id];
+    if (c->invert)
+    {
+        v = (int32_t)c->max + (int32_t)c->min - v;
+    }
+
+    span = (int32_t)c->max - (int32_t)c->min;
+    if (span <= 0)
+    {
+        return 0;
+    }
+    out = ((v - (int32_t)c->min) * 255) / span;
+    if (out < 0)
+    {
+        out = 0;
+    }
+    if (out > 255)
+    {
+        out = 255;
+    }
+    return (uint8_t)out;
+}
+
+/* 扳机数字量（给 HID 按钮域 B7/B8 用：行程超过 50% 算按下） */
+#define TRIGGER_DIGITAL_TH 128
+uint8_t trigger_is_pressed(AXIS id)
+{
+    return (trigger_get_8bit(id) >= TRIGGER_DIGITAL_TH) ? 1u : 0u;
+}
