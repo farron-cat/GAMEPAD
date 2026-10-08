@@ -4,6 +4,7 @@
 
 #include "bsp_keys.h"
 #include "bsp_rgb_leds.h"
+#include "msp_adc.h"
 #include "msp_uart.h"
 
 /* 私有函数声明 */
@@ -21,6 +22,8 @@ int main(void)
     //============ 片上外设 ============
     // USART1
     msp_uart_init();
+    // ADC
+    msp_adc_init();
 
     //============ 片外外设 ============
     // LED
@@ -41,11 +44,18 @@ int main(void)
         led_rgb_test();
         // rgb_led_mono_test();
 
-        if ((get_ms() - t_print) >= 100)
+        if ((get_ms() - t_print) >= 1000)
         {
             t_print = get_ms();
-            printf("KEY map=%04X press=%04X\r\n",
-                   keys_get_state(), keys_get_pressed());
+
+            // printf("KEY map=%04X press=%04X\r\n",
+            //        keys_get_state(), keys_get_pressed());
+
+            /* 标定模式：每 200ms 打印原始值，人工把每个摇杆推到 8 个极限位置、扳机全行程 */
+            printf("RAW LX=%4u LY=%4u RX=%4u RY=%4u LT=%4u RT=%4u\r\n",
+                   msp_adc_raw(AXIS_LX), msp_adc_raw(AXIS_LY),
+                   msp_adc_raw(AXIS_RX), msp_adc_raw(AXIS_RY),
+                   msp_adc_raw(AXIS_LT), msp_adc_raw(AXIS_RT));
         }
     }
 }
