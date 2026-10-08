@@ -28,7 +28,9 @@ void bsp_rgb_leds_clear(void);
 // 刷新
 void bsp_rgb_leds_refresh(void);
 
-// 调试用：打印缓冲区前 count 个值（不要在灯效循环里调用）
+//============ 调  试  ============
 void bsp_rgb_leds_dump(uint8_t count);
+void led_rgb_test(void);
+void rgb_led_mono_test(void);
 
 #endif // BSP_RGB_LEDS_H

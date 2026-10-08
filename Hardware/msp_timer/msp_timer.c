@@ -34,17 +34,7 @@ void msp_ws2812_timer_init(void)
     TIM_OCInitStructure.TIM_Pulse = 0;                            // 占空比 初始占空比为0
     TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;     // 输出极性
     TIM_OC1Init(TIM1, &TIM_OCInitStructure);
-    // ★ 必须开预装载（OC1PE=1）：DMA 的请求来自 CC1 事件（比较匹配点，即本 bit 的下降沿，
-    //   CNT 已经走到 29/58 了），此时把新值写进预装载寄存器，真正生效要等到下一个更新事件
-    //   （CNT 回 0，也就是下一个 bit 的起点）→ 一个 bit 周期只产生一次比较匹配 = 只搬一次数据。
-    //   若关掉预装载（写 CCR1 立即生效），会出现两个致命问题：
-    //     ① 0→1 跳变时 CCR 在周期中途由 29 变大到 58，CNT(≈30) < 58 → 输出在本 bit 后半段
-    //        又被拉高，形成一个多余脉冲（灯珠多认一位 / 丢同步）；
-    //     ② 这个更大的 CCR 会在 CNT=58 再触发一次比较匹配 → 再发一次 DMA 请求，
-    //        于是一个 1.25µs 的 bit 槽里被搬走两个缓冲区数据 → 整帧被“压缩”、位流整体错位
-    //        → 表现为颜色乱、只有某些颜色亮、非常闪。
-    //   开预装载后整帧会延后一个 1.25µs 的 bit 槽（初始 CCR=0 输出全程低，正好当复位间隔），
-    //   对灯珠无影响。
+    // 必须开预装载（OC1PE=1）
     TIM_OC1PreloadConfig(TIM1, TIM_OCPreload_Enable);
     // 打开总开关MOE
     TIM_CtrlPWMOutputs(TIM1, ENABLE);
@@ -64,9 +54,7 @@ void msp_ws2812_timer_init(void)
     DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord; // 外设数据宽度 每次搬运多少位到外设 半字16位
     DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;         // 内存数据宽度 每次搬运多少位到内存 半字16位
     DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;                               // 单次模式
-    // ★ 最高优先级：一次搬运必须在下一个更新事件之前完成（1 码只剩 0.44µs 余量），
-    //   以后 ADC1 也用 DMA1_CH1 时不会被它抢占时序。
-    DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh;
+    DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh;                     // 优先级 设置为最高
     DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;                                // 内存到内存模式 禁用
     DMA_Init(DMA1_Channel2, &DMA_InitStructure);
     // 清理DMA标志
