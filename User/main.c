@@ -2,6 +2,7 @@
 #include "systick.h"
 #include <stdio.h>
 
+#include "app_hid.h"
 #include "app_ui.h"
 #include "bsp_iic_soft.h"
 #include "bsp_keys.h"
@@ -9,6 +10,8 @@
 #include "bsp_rgb_leds.h"
 #include "msp_adc.h"
 #include "msp_uart.h"
+#include "usb_conf.h"
+#include "usb_hid_app.h"
 
 /* 私有函数声明 */
 void bsp_led_init(void);
@@ -28,6 +31,11 @@ int main(void)
     msp_uart_init();
     // ADC
     msp_adc_init();
+
+    //============ USB HID ============
+    usb_hid_init();                             /* ① USB 设备栈 */
+    app_hid_init();                             /* ② 07 篇：9 字节报告容器 */
+    app_hid_set_transport(usb_hid_send_report); /* ③ 把传输层接上（唯一真理源约定） */
 
     //============ 片外外设 ============
     // LED
@@ -51,6 +59,10 @@ int main(void)
     // 主循环
     while (1)
     {
+
+        app_hid_build_report(); /* 采输入 → 填 9 字节 */
+        app_hid_flush();        /* 变化即发 + 保活（07 篇 §5 的发送策略） */
+
         // led_test();
         led_rgb_test();
         // rgb_led_mono_test();
@@ -109,7 +121,7 @@ void led_test(void)
 
 void oled_test(void)
 {
-    bsp_oled_show_string(0, 0, "hello gamepad!", 16, 1);
+    bsp_oled_show_string(0, 0, (uint8_t *)"hello gamepad!", 16, 1);
     bsp_oled_refresh();
 }
 

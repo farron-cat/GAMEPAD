@@ -25,6 +25,9 @@
 #include "bsp_keys.h"
 #include "msp_adc.h"
 #include "systick.h"
+#include "usb_lib.h"
+#include "usb_istr.h" /* ★ USB_Istr()：usb_lib.h 并不包含它 */
+#include "usb_pwr.h"  /* Resume() / RESUME_EXTERNAL */
 
 volatile uint32_t systick_cnt = 0;
 
@@ -141,6 +144,18 @@ void SysTick_Handler(void)
     delay_decrement();
     bsp_keys_scan(); // 每 1ms 扫描一次按键
     msp_adc_poll();  // 每 1ms 扫描一次 ADC
+}
+
+/* USB 低优先级中断（枚举、SETUP、控制传输、端点 CTR 全在这里） */
+void USB_LP_CAN1_RX0_IRQHandler(void)
+{
+    USB_Istr();
+}
+
+/* USB 唤醒（从挂起恢复）：例程做的就是这一句 */
+void USBWakeUp_IRQHandler(void)
+{
+    Resume(RESUME_EXTERNAL);
 }
 
 /******************************************************************************/

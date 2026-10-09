@@ -17,9 +17,23 @@ virtualFolder:
     - name: APP
       files:
         - path: APP/app_ui/app_ui.c
+        - path: APP/app_hid/app_hid.c
       folders: []
     - name: Middleware
-      files: []
+      files:
+        - path: Middleware/usb_hid/hw_config.c
+        - path: Middleware/usb_hid/usb_desc.c
+        - path: Middleware/usb_hid/usb_endp.c
+        - path: Middleware/usb_hid/usb_hid_app.c
+        - path: Middleware/usb_hid/usb_istr.c
+        - path: Middleware/usb_hid/usb_prop.c
+        - path: Middleware/usb_hid/usb_pwr.c
+        - path: Middleware/usb_driver/usb_core.c
+        - path: Middleware/usb_driver/usb_init.c
+        - path: Middleware/usb_driver/usb_int.c
+        - path: Middleware/usb_driver/usb_mem.c
+        - path: Middleware/usb_driver/usb_regs.c
+        - path: Middleware/usb_driver/usb_sil.c
       folders: []
     - name: CMSIS
       files:
@@ -74,6 +88,9 @@ targets:
         - Driver/bsp_oled
         - Driver/bsp_iic_soft
         - APP/app_ui
+        - Middleware/usb_hid
+        - Middleware/usb_driver
+        - APP/app_hid
       libList: []
     excludeList: []
     settings:
