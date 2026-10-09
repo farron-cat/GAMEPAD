@@ -23,6 +23,22 @@ void delay_1ms(uint32_t count)
     }
 }
 
+void delay_1us(uint32_t count)
+{
+    while (count--)
+    {
+        /* 72MHz 下 8 次 NOP 约 1μs，实测微调 */
+        __NOP();
+        __NOP();
+        __NOP();
+        __NOP();
+        __NOP();
+        __NOP();
+        __NOP();
+        __NOP();
+    }
+}
+
 void delay_decrement(void)
 {
     us_cnt++;

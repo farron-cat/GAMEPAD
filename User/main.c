@@ -2,7 +2,9 @@
 #include "systick.h"
 #include <stdio.h>
 
+#include "bsp_iic_soft.h"
 #include "bsp_keys.h"
+#include "bsp_oled.h"
 #include "bsp_rgb_leds.h"
 #include "msp_adc.h"
 #include "msp_uart.h"
@@ -10,6 +12,7 @@
 /* 私有函数声明 */
 void bsp_led_init(void);
 void led_test(void);
+void oled_test(void);
 
 /* 主函数 */
 int main(void)
@@ -32,6 +35,9 @@ int main(void)
     bsp_rgb_leds_init();
     // KEYS
     bsp_keys_init();
+    // OLED
+    bsp_iic_soft_init();
+    bsp_oled_init();
 
     printf("============ start ============\n");
     printf("SystemCoreClock = %u\r\n", (unsigned int)SystemCoreClock);
@@ -43,6 +49,8 @@ int main(void)
         // led_test();
         led_rgb_test();
         // rgb_led_mono_test();
+
+        oled_test();
 
         if ((get_ms() - t_print) >= 1000)
         {
@@ -91,6 +99,12 @@ void led_test(void)
     // printf("LED OFF\r\n");
 
     delay_1ms(1000);
+}
+
+void oled_test(void)
+{
+    bsp_oled_show_string(0, 0, "hello gamepad!", 16, 1);
+    bsp_oled_refresh();
 }
 
 #ifdef USE_FULL_ASSERT

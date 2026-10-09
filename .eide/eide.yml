@@ -29,6 +29,8 @@ virtualFolder:
       files:
         - path: Driver/bsp_keys/bsp_keys.c
         - path: Driver/bsp_rgb_leds/bsp_rgb_leds.c
+        - path: Driver/bsp_oled/bsp_oled.c
+        - path: Driver/bsp_iic_soft/bsp_iic_soft.c
       folders: []
     - name: Hardware
       files:
@@ -68,6 +70,8 @@ targets:
         - Hardware/msp_timer
         - Driver/bsp_rgb_leds
         - Hardware/msp_adc
+        - Driver/bsp_oled
+        - Driver/bsp_iic_soft
       libList: []
     excludeList: []
     settings:
