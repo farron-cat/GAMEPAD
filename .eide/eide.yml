@@ -15,7 +15,8 @@ virtualFolder:
         - path: User/systick.c
       folders: []
     - name: APP
-      files: []
+      files:
+        - path: APP/app_ui/app_ui.c
       folders: []
     - name: Middleware
       files: []
@@ -72,6 +73,7 @@ targets:
         - Hardware/msp_adc
         - Driver/bsp_oled
         - Driver/bsp_iic_soft
+        - APP/app_ui
       libList: []
     excludeList: []
     settings:

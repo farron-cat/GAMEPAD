@@ -23,6 +23,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_it.h"
 #include "bsp_keys.h"
+#include "msp_adc.h"
 #include "systick.h"
 
 volatile uint32_t systick_cnt = 0;
@@ -139,6 +140,7 @@ void SysTick_Handler(void)
 {
     delay_decrement();
     bsp_keys_scan(); // 每 1ms 扫描一次按键
+    msp_adc_poll();  // 每 1ms 扫描一次 ADC
 }
 
 /******************************************************************************/

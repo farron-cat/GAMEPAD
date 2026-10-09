@@ -2,6 +2,7 @@
 #include "systick.h"
 #include <stdio.h>
 
+#include "app_ui.h"
 #include "bsp_iic_soft.h"
 #include "bsp_keys.h"
 #include "bsp_oled.h"
@@ -39,6 +40,10 @@ int main(void)
     bsp_iic_soft_init();
     bsp_oled_init();
 
+    //============    APP    ============
+    // UI
+    app_ui_init();
+
     printf("============ start ============\n");
     printf("SystemCoreClock = %u\r\n", (unsigned int)SystemCoreClock);
 
@@ -50,7 +55,8 @@ int main(void)
         led_rgb_test();
         // rgb_led_mono_test();
 
-        oled_test();
+        // oled_test();
+        app_ui_task();
 
         if ((get_ms() - t_print) >= 1000)
         {
